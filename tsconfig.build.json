@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "public/dist",
+    "rootDir": "./src"
+  },
+  "include": [],
+  "files": [
+    "./src/contentScript.ts",
+    "./src/background.ts"
+  ]
+}
