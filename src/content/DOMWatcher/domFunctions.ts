@@ -14,6 +14,8 @@ function* ids() {
 
 const idGenerator = ids();
 
+const NODE_ATTRIBUTE = 'data-node-id-nsfw';
+
 const textTags = [
   'H1',
   'H2',
@@ -80,11 +82,11 @@ export const buildDOMTree = (element: Element): DOMTree => {
 
   if (textTags.includes(element.tagName) && element.textContent?.trim()) {
     nodeId = `tn_${idGenerator.next().value}`;
-    const prevNodeId = element.getAttribute('data-node-id-nsfw');
+    const prevNodeId = element.getAttribute(NODE_ATTRIBUTE);
     if (prevNodeId) {
       nodeId = prevNodeId;
     }
-    element.setAttribute('data-id', nodeId);
+    element.setAttribute(NODE_ATTRIBUTE, nodeId);
   }
 
   const nodeData: DOMTree = {
@@ -135,7 +137,7 @@ const sanitize = (text: string) => {
 
 export const buildDOMFromJSON = (modifications: Modification[]) => {
   modifications.forEach(mod => {
-    const element = document.querySelector(`[data-node-id-nsfw="${mod.id}"]`);
+    const element = document.querySelector(`[${NODE_ATTRIBUTE}="${mod.id}"]`);
     if (element) {
       // Directly modify text content to preserve event handlers
       element.textContent = sanitize(mod.text);

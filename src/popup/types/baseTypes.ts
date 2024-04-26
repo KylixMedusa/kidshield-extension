@@ -18,7 +18,7 @@ export type DomTextNodes = Omit<DOMTree, 'children'> & {
 export interface PredictionResponse {
   url: string;
   modifications: Modification[];
-  images: Record<string, boolean>;
+  images: string[];
 }
 
 export interface PredictionRequest {

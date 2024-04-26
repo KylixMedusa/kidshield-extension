@@ -55,11 +55,17 @@ export class QueueWrapper extends QueueBase implements IQueueWrapper {
     callback: (value: PredictionResponse) => void,
     appendToCache = false,
   ) => {
-    console.log('Sending request to backend for tab:', tabId, url, request);
-    const response: PredictionResponse = await new Promise(resolve =>
-      // eslint-disable-next-line no-promise-executor-return
-      setTimeout(() => resolve({ url, modifications: [], images: {} }), 1000),
+    const resp = await fetch(
+      'https://9wn4104g-9000.inc1.devtunnels.ms/filter-content',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+      },
     );
+    const response: PredictionResponse = (await resp.json()).result;
     if (appendToCache) {
       const cache = this.cache.get(url);
       if (cache) {
@@ -67,9 +73,7 @@ export class QueueWrapper extends QueueBase implements IQueueWrapper {
           ...cache.modifications,
           ...response.modifications,
         ];
-        Object.entries(response.images).forEach(([key, value]) => {
-          cache.images[key] = value;
-        });
+        cache.images = [...cache.images, ...response.images];
         this.cache.set(url, cache);
       } else {
         this.cache.set(url, response);

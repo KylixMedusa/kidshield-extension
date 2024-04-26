@@ -22,8 +22,6 @@ const _buildTabIdUrl = (tab: chrome.tabs.Tab): TabIdUrl => {
 const load = ({ logger, store }: loadType): void => {
   const queue = new Queue(logger);
 
-  console.log('Background script loaded', queue);
-
   // Event when content sends request to filter content
   chrome.runtime.onMessage.addListener(
     (

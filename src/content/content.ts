@@ -11,7 +11,8 @@ const init = (): void => {
     .then(store => {
       const { websites } = store.getState().settings;
       if (!websites.includes(window.location.hostname)) {
-        domWatcher.watch();
+        // TODO: Enable watch again after optimizing the API
+        // domWatcher.watch();
       }
     })
     .catch(error => {

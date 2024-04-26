@@ -114,7 +114,6 @@ export class DOMWatcher implements IDOMWatcher {
             //   chrome.runtime.lastError.message,
             // );
           }
-          console.log(response);
           const { modifications, images: responseImages } = response;
           DomFunctions.buildDOMFromJSON(modifications);
           images.forEach(src => {
@@ -123,7 +122,7 @@ export class DOMWatcher implements IDOMWatcher {
               imgElements.forEach(img => {
                 this.imageFilter.previewImage(
                   img as HTMLImageElement,
-                  responseImages[src],
+                  responseImages.includes(src),
                 );
               });
             }
