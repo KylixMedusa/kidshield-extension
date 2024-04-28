@@ -154,9 +154,33 @@ export const getTextNodes = (element: Element): DomTextNodes[] => {
   return [];
 };
 
+export const getMetadata = () => {
+  // Get the favicon (icon) of the website
+  const favicon: HTMLAnchorElement | null =
+    document.querySelector("link[rel*='icon']") ||
+    document.querySelector("link[rel='shortcut icon']");
+  const iconUrl = favicon ? favicon.href : '';
+
+  // Get the title of the website
+  const { title } = document;
+
+  // Get the description of the website
+  const description = document.querySelector('meta[name="description"]');
+  const descriptionContent = description
+    ? description.getAttribute('content')
+    : '';
+
+  return {
+    icon: iconUrl,
+    title,
+    description: descriptionContent,
+  };
+};
+
 const DomFunctions = {
   getTextNodes,
   buildDOMFromJSON,
+  getMetadata,
 };
 
 export default DomFunctions;

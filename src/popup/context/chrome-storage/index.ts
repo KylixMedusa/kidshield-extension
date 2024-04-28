@@ -7,6 +7,7 @@ import {
 import { configureStore } from '@reduxjs/toolkit';
 
 import rootReducer from '../rootReducer';
+import { Store } from '../types';
 
 // Function to create a Redux store container
 const storeCreatorContainer: StoreCreatorContainer = preloadedState =>
@@ -27,5 +28,5 @@ const instantiate = setupReduxed(storeCreatorContainer, options);
 // Function to create a Chrome store
 export const createChromeStore = async () => {
   const store = await instantiate();
-  return store;
+  return store as Store;
 };

@@ -47,13 +47,18 @@
     {
       "resources": [
         "images/*",
-        "assets/*"
+        "src/*"
       ],
       "matches": [
         "<all_urls>"
       ]
     }
   ],
+  "externally_connectable": {
+    "matches": [
+      "<all_urls>"
+    ]
+  },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
   },

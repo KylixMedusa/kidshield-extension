@@ -1,11 +1,10 @@
-import { ExtendedStore } from 'reduxed-chrome-storage';
-import { ILogger } from 'utils/Logger';
-
+import { ILogger } from '../../utils/Logger';
+import { Store } from '../context/types';
 import { PredictionRequest } from './baseTypes';
 
 // eslint-disable-next-line no-shadow
 export enum ChromeMessageType {
-  SIGN_CONNECT = 'SIGN_CONNECT',
+  TOGGLE_EXTENSION = 'TOGGLE_EXTENSION',
 
   PROCESS_REQUEST = 'PROCESS_REQUEST',
 
@@ -15,7 +14,7 @@ export enum ChromeMessageType {
 
 export type loadType = {
   logger: ILogger;
-  store: ExtendedStore;
+  store: Store;
 };
 
 export type ChromeMessage<T, U> = {
@@ -23,4 +22,7 @@ export type ChromeMessage<T, U> = {
   payload: U;
 };
 
-export type ChromeRequest = ChromeMessage<ChromeMessageType, PredictionRequest>;
+export type ChromeRequest<T = PredictionRequest> = ChromeMessage<
+  ChromeMessageType,
+  T
+>;

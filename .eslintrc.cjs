@@ -56,6 +56,8 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'no-plusplus': 'off',
     'class-methods-use-this': 'off',
+    'jsx-a11y/click-events-have-key-events': 'off',
+    'jsx-a11y/interactive-supports-focus': 'off',
     'react/function-component-definition': [
       'error',
       {

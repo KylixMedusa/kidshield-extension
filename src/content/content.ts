@@ -3,16 +3,20 @@ import { DOMWatcher } from './DOMWatcher/DOMWatcher';
 import Loader from './loader';
 
 const init = (): void => {
-  Loader.createLoader();
-
-  const domWatcher = new DOMWatcher();
-
   createChromeStore()
     .then(store => {
-      const { websites } = store.getState().settings;
+      const {
+        settings: { websites },
+        app: { isExtensionOn },
+      } = store.getState();
       if (!websites.includes(window.location.hostname)) {
-        // TODO: Enable watch again after optimizing the API
-        // domWatcher.watch();
+        if (isExtensionOn) {
+          Loader.createLoader();
+          const domWatcher = new DOMWatcher();
+
+          // TODO: Enable watch again after optimizing the API
+          // domWatcher.watch();
+        }
       }
     })
     .catch(error => {

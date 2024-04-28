@@ -1,4 +1,5 @@
 import { createChromeStore } from '../popup/context/chrome-storage';
+import { toggleExtension } from '../popup/context/reducers/appReducer';
 import { RootState } from '../popup/context/types';
 import {
   ChromeMessageType,
@@ -22,6 +23,22 @@ const _buildTabIdUrl = (tab: chrome.tabs.Tab): TabIdUrl => {
 const load = ({ logger, store }: loadType): void => {
   const queue = new Queue(logger);
 
+  // Event when content sends request to toggle extension
+  chrome.runtime.onMessageExternal.addListener(
+    (request: ChromeRequest<string | boolean>, sender, sendResponse) => {
+      console.log('request.type', request.type, request);
+      switch (request.type) {
+        case ChromeMessageType.TOGGLE_EXTENSION:
+          store.dispatch(toggleExtension(request.payload as boolean));
+          break;
+        default:
+          break;
+      }
+
+      return true; // https://stackoverflow.com/a/56483156
+    },
+  );
+
   // Event when content sends request to filter content
   chrome.runtime.onMessage.addListener(
     (
@@ -29,9 +46,8 @@ const load = ({ logger, store }: loadType): void => {
       sender,
       callback: (value: PredictionResponse) => void,
     ) => {
+      console.log('request.type', request.type, request);
       switch (request.type) {
-        case ChromeMessageType.SIGN_CONNECT:
-          return;
         case ChromeMessageType.PREDICTION_REQUEST:
           queue.analyze(
             request.payload,
