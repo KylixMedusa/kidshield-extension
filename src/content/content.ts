@@ -6,13 +6,14 @@ const init = (): void => {
   createChromeStore()
     .then(store => {
       const {
-        settings: { websites },
-        app: { isExtensionOn },
+        settings: { websites, isExtensionOn, filterEffect },
       } = store.getState();
       if (!websites.includes(window.location.hostname)) {
         if (isExtensionOn) {
           Loader.createLoader();
-          const domWatcher = new DOMWatcher();
+          const domWatcher = new DOMWatcher({
+            filterEffect,
+          });
 
           // TODO: Enable watch again after optimizing the API
           // domWatcher.watch();

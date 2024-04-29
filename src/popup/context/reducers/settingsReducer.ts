@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type SettingsState = {
   logging: boolean;
+  isExtensionOn: boolean;
   filterEffect: 'hide' | 'blur' | 'grayscale';
   filterStrictness: number;
   websites: string[];
@@ -10,6 +11,7 @@ export type SettingsState = {
 
 const initialState: SettingsState = {
   logging: true,
+  isExtensionOn: false,
   filterEffect: 'blur',
   filterStrictness: 55,
   websites: [],
@@ -21,6 +23,9 @@ const settingsSlice = createSlice({
   reducers: {
     setLogging: (state, action: PayloadAction<boolean>) => {
       state.logging = action.payload;
+    },
+    toggleExtension: (state, action: PayloadAction<boolean>) => {
+      state.isExtensionOn = action.payload;
     },
     setFilterEffect: (
       state,
@@ -37,7 +42,12 @@ const settingsSlice = createSlice({
   },
 });
 
-export const { setLogging, setFilterEffect, setFilterStrictness, setWebsites } =
-  settingsSlice.actions;
+export const {
+  setLogging,
+  toggleExtension,
+  setFilterEffect,
+  setFilterStrictness,
+  setWebsites,
+} = settingsSlice.actions;
 
 export default settingsSlice.reducer;

@@ -7,18 +7,24 @@ import { useNavigate } from 'react-router-dom';
 import { emailPattern } from '../../../utils/utils';
 import Assets from '../../assets';
 import Header from '../../components/Header/Header';
-import { setIsLoggedIn } from '../../context/reducers/appReducer';
-import { useAppDispatch } from '../../hooks/context';
+import { setIsLoggedIn, setToken } from '../../context/reducers/appReducer';
+import {
+  setFilterEffect,
+  toggleExtension,
+} from '../../context/reducers/settingsReducer';
+import { useAppDispatch, useAppSelector } from '../../hooks/context';
 import ROUTES from '../../types/routes';
 
 const Login: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [error, setError] = React.useState<string>('');
+  const { apiEndpoint } = useAppSelector(state => state.app);
 
-  const _onLogin = (email: string, password: string) => {
-    console.log(email, password);
+  const [error, setError] = React.useState<string>('');
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+  const _onLogin = async (email: string, password: string) => {
     if (!email || !emailPattern.test(email)) {
       setError('Please enter a valid email address');
       return;
@@ -34,10 +40,50 @@ const Login: React.FC = () => {
       return;
     }
 
-    dispatch(setIsLoggedIn(true));
+    setIsLoading(true);
 
-    // Redirect to home
-    navigate(ROUTES.HOME);
+    try {
+      const response = await fetch(`${apiEndpoint}/login-extension`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.status !== 200) {
+        setError(data.message);
+        setIsLoading(false);
+        return;
+      }
+
+      const { token, isExtensionEnabled, imageFilterMode } = data.result;
+
+      if (!token) {
+        setError('An error occurred. Please try again later.');
+        setIsLoading(false);
+        return;
+      }
+
+      // Save values to reducer
+      dispatch(setToken(token));
+      dispatch(setFilterEffect(imageFilterMode));
+      dispatch(toggleExtension(isExtensionEnabled));
+
+      dispatch(setIsLoggedIn(true));
+
+      // Redirect to home
+      navigate(ROUTES.HOME);
+    } catch (err: unknown) {
+      console.error(err);
+      setError('An error occurred. Please try again later.');
+      setIsLoading(false);
+    }
   };
 
   const _onSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
@@ -87,7 +133,7 @@ const Login: React.FC = () => {
           </a>
           <div className="button-container">
             {error && <p className="error">{error}</p>}
-            <button type="submit" className="primary">
+            <button type="submit" className="primary" disabled={isLoading}>
               Login
             </button>
           </div>

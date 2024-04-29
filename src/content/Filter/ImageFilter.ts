@@ -1,5 +1,7 @@
 /* eslint-disable no-param-reassign */
 
+import { FilterEffect } from 'popup/types/baseTypes';
+
 export type IImageFilter = {
   analyzeImage: (image: HTMLImageElement, srcAttribute: boolean) => void;
   previewImage: (image: HTMLImageElement, isNSFW: boolean) => void;
@@ -8,8 +10,11 @@ export type IImageFilter = {
 export class ImageFilter implements IImageFilter {
   private readonly MIN_IMAGE_SIZE: number;
 
-  constructor() {
+  private filterEffect: FilterEffect;
+
+  constructor({ filterEffect }: { filterEffect: FilterEffect }) {
     this.MIN_IMAGE_SIZE = 41;
+    this.filterEffect = filterEffect;
   }
 
   public analyzeImage(
@@ -32,8 +37,13 @@ export class ImageFilter implements IImageFilter {
 
   public previewImage(image: HTMLImageElement, isNSFW: boolean): void {
     if (isNSFW) {
-      image.style.filter = 'blur(25px)';
-      this.showImage(image, image.src);
+      if (this.filterEffect === 'blur') {
+        image.style.filter = 'blur(25px)';
+        this.showImage(image, image.src);
+      } else if (this.filterEffect === 'grayscale') {
+        image.style.filter = 'grayscale(1)';
+        this.showImage(image, image.src);
+      }
       image.dataset.nsfwFilterStatus = 'nsfw';
     } else {
       this.showImage(image, image.src);

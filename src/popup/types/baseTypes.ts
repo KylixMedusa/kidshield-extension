@@ -16,12 +16,20 @@ export type DomTextNodes = Omit<DOMTree, 'children'> & {
 };
 
 export interface PredictionResponse {
-  url: string;
   modifications: Modification[];
   images: string[];
 }
 
 export interface PredictionRequest {
+  url: string;
   dom: DomTextNodes[];
   images: string[];
+}
+
+export type FilterEffect = 'hide' | 'blur' | 'grayscale';
+
+export interface User {
+  isExtensionEnabled: boolean;
+  filterStrictness: number;
+  imageFilterMode: FilterEffect;
 }

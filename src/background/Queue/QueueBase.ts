@@ -1,5 +1,6 @@
 import { PredictionResponse } from 'popup/types/baseTypes';
 
+import { Store } from '../../popup/context/types';
 import { ILogger } from '../../utils/Logger';
 import { LRUCache } from '../LRUCache';
 
@@ -15,6 +16,8 @@ export const DEFAULT_TAB_ID = 999999;
 export class QueueBase {
   protected readonly logger: ILogger;
 
+  protected readonly store: Store;
+
   protected readonly currentTabIdUrls: Map<
     KeyType<TabIdUrl, 'tabId'>,
     KeyType<TabIdUrl, 'tabUrl'>
@@ -28,8 +31,10 @@ export class QueueBase {
 
   protected readonly cache: LRUCache<string, PredictionResponse>;
 
-  constructor(logger: ILogger) {
+  constructor(logger: ILogger, store: Store) {
     this.logger = logger;
+
+    this.store = store;
 
     this.requestMap = new Map();
     this.DEFAULT_TAB_ID = DEFAULT_TAB_ID;

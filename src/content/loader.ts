@@ -16,8 +16,8 @@ function createLoader() {
   loader.style.top = '0';
   loader.style.width = '100%';
   loader.style.height = '100%';
-  loader.style.zIndex = '10000';
-  loader.style.backgroundColor = 'rgba(0,0,0)';
+  loader.style.zIndex = '999999999';
+  loader.style.backgroundColor = '#ffffff';
   loader.style.display = 'flex';
   loader.style.justifyContent = 'center';
   loader.style.alignItems = 'center';
@@ -28,9 +28,9 @@ function createLoader() {
   const loaderElement = loader.querySelector('.loader') as HTMLElement;
 
   if (loaderElement) {
-    loaderElement.style.border = '16px solid #f3f3f3';
+    loaderElement.style.border = '16px solid #f9e9f1';
     loaderElement.style.borderRadius = '50%';
-    loaderElement.style.borderTop = '16px solid #3498db';
+    loaderElement.style.borderTop = '16px solid #dc2b6b';
     loaderElement.style.width = '120px';
     loaderElement.style.height = '120px';
     loaderElement.style.animation = 'spin 2s linear infinite';

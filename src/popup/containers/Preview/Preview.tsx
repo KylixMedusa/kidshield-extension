@@ -6,7 +6,7 @@ import Assets from '../../assets';
 import { useAppSelector } from '../../hooks/context';
 
 const Preview: React.FC = () => {
-  const { isExtensionOn } = useAppSelector(state => state.app);
+  const { isExtensionOn } = useAppSelector(state => state.settings);
 
   return (
     <div className="popup-safe-preview">

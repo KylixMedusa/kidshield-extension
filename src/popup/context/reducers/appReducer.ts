@@ -2,29 +2,30 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type AppState = {
+  apiEndpoint: string;
+  token: string | null;
   isLoggedIn: boolean;
-  isExtensionOn: boolean;
 };
 
 const initialState: AppState = {
+  apiEndpoint: 'https://9wn4104g-9000.inc1.devtunnels.ms',
+  token: null,
   isLoggedIn: false,
-  isExtensionOn: false,
 };
 
 const appSlice = createSlice({
   name: 'app',
   initialState,
   reducers: {
+    setToken: (state, action: PayloadAction<string | null>) => {
+      state.token = action.payload;
+    },
     setIsLoggedIn: (state, action: PayloadAction<boolean>) => {
       state.isLoggedIn = action.payload;
-      state.isExtensionOn = action.payload;
-    },
-    toggleExtension: (state, action: PayloadAction<boolean>) => {
-      state.isExtensionOn = action.payload;
     },
   },
 });
 
-export const { setIsLoggedIn, toggleExtension } = appSlice.actions;
+export const { setIsLoggedIn, setToken } = appSlice.actions;
 
 export default appSlice.reducer;

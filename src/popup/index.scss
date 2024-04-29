@@ -103,6 +103,12 @@ button {
   transition: all var(--transition);
 
   text-transform: uppercase;
+
+  &:disabled {
+    background-color: var(--border) !important;
+    color: var(--text3);
+    cursor: not-allowed;
+  }
 }
 
 button.primary {

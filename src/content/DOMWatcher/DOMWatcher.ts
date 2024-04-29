@@ -1,5 +1,9 @@
 import { ChromeMessageType } from '../../popup/types/background';
-import { DomTextNodes, PredictionResponse } from '../../popup/types/baseTypes';
+import {
+  DomTextNodes,
+  FilterEffect,
+  PredictionResponse,
+} from '../../popup/types/baseTypes';
 import { ImageFilter } from '../Filter/ImageFilter';
 import Loader from '../loader';
 import DomFunctions from './domFunctions';
@@ -13,14 +17,17 @@ export class DOMWatcher implements IDOMWatcher {
 
   private readonly imageFilter: ImageFilter;
 
-  constructor() {
+  constructor({ filterEffect }: { filterEffect: FilterEffect }) {
     this.observer = new MutationObserver(this.callback.bind(this));
-    this.imageFilter = new ImageFilter();
+    this.imageFilter = new ImageFilter({
+      filterEffect,
+    });
 
     // on init
     const textNodes = DomFunctions.getTextNodes(document.body);
     const images = this.getImages();
     this.analyzeData(textNodes, images, ChromeMessageType.PREDICTION_REQUEST);
+    this.logWebsiteSession();
   }
 
   public watch(): void {
@@ -131,5 +138,17 @@ export class DOMWatcher implements IDOMWatcher {
         },
       );
     }
+  }
+
+  private logWebsiteSession(): void {
+    const metadata = DomFunctions.getMetadata();
+
+    chrome.runtime.sendMessage({
+      type: ChromeMessageType.LOG_WEB_SESSION,
+      payload: {
+        url: window.location.href,
+        metadata,
+      },
+    });
   }
 }

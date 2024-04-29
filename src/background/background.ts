@@ -1,5 +1,8 @@
 import { createChromeStore } from '../popup/context/chrome-storage';
-import { toggleExtension } from '../popup/context/reducers/appReducer';
+import {
+  setFilterEffect,
+  toggleExtension,
+} from '../popup/context/reducers/settingsReducer';
 import { RootState } from '../popup/context/types';
 import {
   ChromeMessageType,
@@ -21,15 +24,17 @@ const _buildTabIdUrl = (tab: chrome.tabs.Tab): TabIdUrl => {
 };
 
 const load = ({ logger, store }: loadType): void => {
-  const queue = new Queue(logger);
+  const queue = new Queue(logger, store);
 
   // Event when content sends request to toggle extension
   chrome.runtime.onMessageExternal.addListener(
-    (request: ChromeRequest<string | boolean>, sender, sendResponse) => {
-      console.log('request.type', request.type, request);
+    (request: ChromeRequest, sender, sendResponse) => {
       switch (request.type) {
         case ChromeMessageType.TOGGLE_EXTENSION:
-          store.dispatch(toggleExtension(request.payload as boolean));
+          store.dispatch(toggleExtension(request.payload));
+          break;
+        case ChromeMessageType.CHANGE_FILTER_EFFECT:
+          store.dispatch(setFilterEffect(request.payload));
           break;
         default:
           break;
@@ -46,8 +51,10 @@ const load = ({ logger, store }: loadType): void => {
       sender,
       callback: (value: PredictionResponse) => void,
     ) => {
-      console.log('request.type', request.type, request);
       switch (request.type) {
+        case ChromeMessageType.LOG_WEB_SESSION:
+          queue.logWebsiteSession(request.payload);
+          break;
         case ChromeMessageType.PREDICTION_REQUEST:
           queue.analyze(
             request.payload,

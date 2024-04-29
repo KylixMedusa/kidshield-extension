@@ -1,3 +1,5 @@
+import { LogSessionRequest } from 'popup/types/background';
+
 import {
   PredictionRequest,
   PredictionResponse,
@@ -49,40 +51,69 @@ export class QueueWrapper extends QueueBase implements IQueueWrapper {
   };
 
   private sendRequest = async (
-    tabId: number,
+    _: number,
     url: string,
     request: PredictionRequest,
     callback: (value: PredictionResponse) => void,
     appendToCache = false,
   ) => {
-    const resp = await fetch(
-      'https://9wn4104g-9000.inc1.devtunnels.ms/filter-content',
-      {
+    try {
+      const { token, apiEndpoint } = await this.store.getState().app;
+
+      const resp = await fetch(`${apiEndpoint}/filter-content`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(request),
-      },
-    );
-    const response: PredictionResponse = (await resp.json()).result;
-    if (appendToCache) {
-      const cache = this.cache.get(url);
-      if (cache) {
-        cache.modifications = [
-          ...cache.modifications,
-          ...response.modifications,
-        ];
-        cache.images = [...cache.images, ...response.images];
-        this.cache.set(url, cache);
+        body: JSON.stringify({
+          ...request,
+          url,
+        }),
+      });
+      const response: PredictionResponse = (await resp.json()).result;
+      if (appendToCache) {
+        const cache = this.cache.get(url);
+        if (cache) {
+          cache.modifications = [
+            ...cache.modifications,
+            ...response.modifications,
+          ];
+          cache.images = [...cache.images, ...response.images];
+          this.cache.set(url, cache);
+        } else {
+          this.cache.set(url, response);
+        }
       } else {
         this.cache.set(url, response);
       }
-    } else {
-      this.cache.set(url, response);
+      callback(response);
+    } catch (error) {
+      this.logger.error('Error in QueueWrapper.sendRequest');
+
+      callback({
+        images: [],
+        modifications: [],
+      });
     }
-    callback(response);
   };
+
+  async logWebsiteSession(payload: LogSessionRequest): Promise<void> {
+    try {
+      const { token, apiEndpoint } = await this.store.getState().app;
+
+      await fetch(`${apiEndpoint}/sessions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+    } catch (error) {
+      this.logger.error('Error in QueueWrapper.logWebsiteSession');
+    }
+  }
 
   public addTabIdUrl(tabIdUrl: TabIdUrl): void {
     const { tabId, tabUrl } = tabIdUrl;
