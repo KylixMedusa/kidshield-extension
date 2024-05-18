@@ -56,39 +56,46 @@ const includedTags = [
   'BODY',
 ];
 
+// stripDOM removes unwanted elements from a DOM tree based on specific criteria,
+// preserving only the elements and their children that meet the conditions.
 export const stripDOM = (DOM: DOMTree, depth: number = 0): DOMTree | null => {
-  // Only keep included tags
+  // Return null if the element's tag is not in the list of included tags.
   if (!includedTags.includes(DOM.tag)) return null;
 
-  // Process children, incrementing the depth
+  // Recursively process child nodes, increasing the depth by one each time.
   const children: DOMTree[] = DOM.children
-    .map(child => stripDOM(child, depth + 1))
-    .filter(child => child !== null) as DOMTree[];
+    .map(child => stripDOM(child, depth + 1)) // Process each child
+    .filter(child => child !== null) as DOMTree[]; // Remove null entries
 
-  // children should not have text unless they are leaf nodes (have no children)
-  // This to prevent redundant long text from being sent to the backend
-  if (children.length > 0 && !textTags.includes(DOM.tag)) DOM.text = null;
+  // Clear text content for non-leaf nodes which shouldn't have text.
+  if (children.length > 0 && !textTags.includes(DOM.tag)) {
+    DOM.text = null;
+  }
 
-  // If it's not a direct child of the root and has no children or meaningful text, remove it
+  // Exclude non-root nodes that are neither text containers nor have children.
   if (depth > 1 && children.length === 0 && !DOM.text) return null;
 
+  // Assign the filtered children back to the DOM node.
   DOM.children = children;
 
   return DOM;
 };
 
+// buildDOMTree constructs a DOM tree from an HTML element.
 export const buildDOMTree = (element: Element): DOMTree => {
   let nodeId: string | null = null;
 
+  // Assign or reassign a unique node ID if the element is a text node.
   if (textTags.includes(element.tagName) && element.textContent?.trim()) {
-    nodeId = `tn_${idGenerator.next().value}`;
+    nodeId = `tn_${idGenerator.next().value}`; // Generate new node ID.
     const prevNodeId = element.getAttribute(NODE_ATTRIBUTE);
     if (prevNodeId) {
-      nodeId = prevNodeId;
+      nodeId = prevNodeId; // Use existing ID if available.
     }
     element.setAttribute(NODE_ATTRIBUTE, nodeId);
   }
 
+  // Construct the basic structure of the DOM tree node.
   const nodeData: DOMTree = {
     tag: element.tagName,
     text: element.textContent?.trim() || null,
@@ -96,6 +103,7 @@ export const buildDOMTree = (element: Element): DOMTree => {
     id: nodeId,
   };
 
+  // Recursively build the tree for all child nodes.
   element.childNodes.forEach(childNode => {
     nodeData.children.push(buildDOMTree(childNode as Element));
   });
@@ -103,22 +111,22 @@ export const buildDOMTree = (element: Element): DOMTree => {
   return nodeData;
 };
 
+// removeUnnecessaryNodes filters out and simplifies nodes in a DOM tree to those containing text.
 export const removeUnnecessaryNodes = (DOM: DOMTree): DomTextNodes[] => {
   const nodes: DOMTree[] = [];
 
+  // Traverse the DOM tree and collect nodes with IDs.
   const traverseAmongNodes = (node: DOMTree) => {
     if (node.id) {
       nodes.push(node);
     } else {
-      node.children.forEach(child => {
-        traverseAmongNodes(child);
-      });
+      node.children.forEach(child => traverseAmongNodes(child));
     }
   };
 
   traverseAmongNodes(DOM);
 
-  // remove children of all the nodes & filter out nodes with no text and no id
+  // Filter for nodes with text and a defined ID, stripping children for simplicity.
   const textNodes = nodes
     .filter(node => node.text && node.id)
     .map(node => {
@@ -127,6 +135,16 @@ export const removeUnnecessaryNodes = (DOM: DOMTree): DomTextNodes[] => {
     });
 
   return textNodes;
+};
+
+// getTextNodes extracts text nodes from an HTML element's DOM.
+export const getTextNodes = (element: Element): DomTextNodes[] => {
+  const bodyDOM = buildDOMTree(element); // Construct the initial DOM tree.
+  const strippedDOM = stripDOM(bodyDOM, 0); // Strip down the DOM to relevant nodes.
+  if (strippedDOM) {
+    return removeUnnecessaryNodes(strippedDOM); // Extract text nodes from the stripped DOM.
+  }
+  return [];
 };
 
 const sanitize = (text: string) => {
@@ -143,15 +161,6 @@ export const buildDOMFromJSON = (modifications: Modification[]) => {
       element.textContent = sanitize(mod.text);
     }
   });
-};
-
-export const getTextNodes = (element: Element): DomTextNodes[] => {
-  const bodyDOM = buildDOMTree(element);
-  const strippedDOM = stripDOM(bodyDOM, 0);
-  if (strippedDOM) {
-    return removeUnnecessaryNodes(strippedDOM);
-  }
-  return [];
 };
 
 export const getMetadata = () => {
