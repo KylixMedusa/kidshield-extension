@@ -8,7 +8,7 @@ export type AppState = {
 };
 
 const initialState: AppState = {
-  apiEndpoint: 'https://9wn4104g-9000.inc1.devtunnels.ms',
+  apiEndpoint: 'https://api.kidshield.life',
   token: null,
   isLoggedIn: false,
 };
