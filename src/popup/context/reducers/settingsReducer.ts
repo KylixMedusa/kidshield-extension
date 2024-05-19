@@ -14,7 +14,7 @@ const initialState: SettingsState = {
   isExtensionOn: false,
   filterEffect: 'blur',
   filterStrictness: 55,
-  websites: [],
+  websites: ['www.kidshield.life'],
 };
 
 const settingsSlice = createSlice({
