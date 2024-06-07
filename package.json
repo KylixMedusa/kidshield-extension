@@ -1,7 +1,7 @@
 {
   "name": "kidshield-extension-frontend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Chrome extension to provide safe browsing for kids",
   "scripts": {
     "lint": "eslint .",
     "clean": "rm -rf dist/src",
