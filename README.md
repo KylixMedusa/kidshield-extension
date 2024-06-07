@@ -1,6 +1,6 @@
-# KidShield Extension Frontend
+# KidShield Extension
 
-KidShield Extension Frontend is a Chrome browser extension designed to provide a safe browsing experience for kids by filtering out inappropriate content and monitoring their online activity. This extension is built with React and TypeScript.
+KidShield Extension is a Chrome browser extension designed to provide a safe browsing experience for kids by filtering out inappropriate content and monitoring their online activity. This extension is built with React and TypeScript.
 
 ## Installation
 
@@ -10,8 +10,8 @@ To install the KidShield Extension, follow these steps:
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/KylixMedusa/kidshield-extension-frontend.git
-   cd kidshield-extension-frontend
+   git clone https://github.com/KylixMedusa/kidshield-extension.git
+   cd kidshield-extension
    ```
 
 2. **Install Dependencies:**
@@ -46,15 +46,15 @@ To install the KidShield Extension, follow these steps:
 
 ## Contributing
 
-We welcome contributions from the community! To contribute to KidShield Extension Frontend, follow these steps:
+We welcome contributions from the community! To contribute to KidShield Extension, follow these steps:
 
 1. **Fork the Repository:**
    Click the "Fork" button at the top right of the repository page to create a copy of the repo under your GitHub account.
 
 2. **Clone the Forked Repository:**
    ```bash
-   git clone https://github.com/your-username/kidshield-extension-frontend.git
-   cd kidshield-extension-frontend
+   git clone https://github.com/your-username/kidshield-extension.git
+   cd kidshield-extension
    ```
 
 3. **Create a New Branch:**
