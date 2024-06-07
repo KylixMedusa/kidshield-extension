@@ -42,7 +42,7 @@ To install the KidShield Extension, follow these steps:
     Parents can log in to the extension using their credentials to access the monitoring and content filtering features.
 
 3. **Settings:**
-   Dashboard allows parents to customize the filtering settings, view activity reports.
+   Dashboard allows parents to customize the filtering settings, view activity reports. To check the dashboard visit [KidShield Dashboard](https://github.com/kylixmedusa/kidshield-dashboard).
 
 ## Contributing
 
