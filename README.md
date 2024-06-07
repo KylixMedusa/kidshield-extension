@@ -1,4 +1,4 @@
-# KidShield Extension Frontend
+# KidShield Extension
 
 KidShield Extension Frontend is a Chrome browser extension designed to provide a safe browsing experience for kids by filtering out inappropriate content and monitoring their online activity. This extension is built with React and TypeScript.
 
