@@ -10,9 +10,20 @@
     "dev:chrome": "npm-run-all --parallel dev start:chrome",
     "start:chrome": "web-ext run --source-dir ./dist/ --target=chromium"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "chrome",
+    "extension",
+    "react",
+    "typescript",
+    "webpack",
+    "redux",
+    "content-filtering",
+    "parental-control",
+    "kidshield",
+    "kidshield-extension"
+  ],
+  "author": "KylixMedusa",
+  "license": "MIT",
   "devDependencies": {
     "@types/chrome": "^0.0.266",
     "@types/node": "^20.12.7",
